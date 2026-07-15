@@ -3,7 +3,7 @@
 public abstract class ABaseHero : IHero
 {
     private int _id;
-    private decimal _dailyCost;
+    private Resource _dailyCost;
     private string _name;
 
     public int Id
@@ -23,19 +23,11 @@ public abstract class ABaseHero : IHero
         }
     }
 
-    public decimal DailyCost
+    public Resource DailyCost
     {
         get => _dailyCost;
         private set
         {
-            if (value < 0)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(value),
-                    value,
-                    "Daily cost cannot be negative.");
-            }
-
             _dailyCost = value;
         }
     }
@@ -60,10 +52,10 @@ public abstract class ABaseHero : IHero
     {
         _id = 0;
         _name = string.Empty;
-        _dailyCost = 0m;
+        _dailyCost = new Resource("Gold", 0m);
 
         Id = id;
         Name = name;
-        DailyCost = dailyCost;
+        DailyCost = new Resource("Gold", dailyCost);
     }
 }

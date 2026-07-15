@@ -1,13 +1,13 @@
 ﻿using System;
 
-public class Warrior: ABaseHero
+public class Warrior : ABaseHero
 {
-	public int _strengthLevel;
+    private int _strengthLevel;
 
 	public int StrengthLevel
     {
-		get;
-		set
+        get => _strengthLevel;
+        private set
 		{
             if (value < 0 || value > 1000)
             {
@@ -19,7 +19,7 @@ public class Warrior: ABaseHero
             _strengthLevel = value;
         }
 	}
-    public Mage(int id, string name, decimal dailyCost, int sLevel)
+    public Warrior(int id, string name, decimal dailyCost, int sLevel)
         : base(id, name, dailyCost)
     {
         StrengthLevel = sLevel;

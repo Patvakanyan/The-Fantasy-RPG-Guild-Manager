@@ -1,6 +1,6 @@
-﻿using System;
-
-public interface IHero
+﻿public interface IHero
 {
-	public IHero();
+    int Id { get; }
+    string Name { get; }
+    Resource DailyCost { get; }
 }
