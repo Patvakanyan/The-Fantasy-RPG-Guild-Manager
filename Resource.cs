@@ -7,21 +7,27 @@ public struct Resource
 
     public string Type
     {
-        get => _type; private set
+        get => _type;
+        private set
         {
             if (string.IsNullOrWhiteSpace(value))
+            {
                 throw new ArgumentException(
-                   "Resource type cannot be null or empty.",
-                   nameof(value));
+                    "Resource type cannot be null or empty.",
+                    nameof(value));
+            }
+
             if (value != "Gold" && value != "Mana")
             {
                 throw new ArgumentException(
                     $"Unsupported resource type: {value}.",
                     nameof(value));
             }
+
             _type = value;
         }
     }
+
     public decimal Amount
     {
         get => _amount;
@@ -42,16 +48,20 @@ public struct Resource
     public Resource(string type, decimal amount)
     {
         _type = string.Empty;
-        _amount = 0;
+        _amount = 0m;
 
         Type = type;
         Amount = amount;
     }
+
     public override string ToString()
     {
         return $"{Amount} {Type}";
     }
-    private static void ValidateSameType(Resource left, Resource right)
+
+    private static void ValidateSameType(
+        Resource left,
+        Resource right)
     {
         if (left.Type != right.Type)
         {
@@ -61,30 +71,50 @@ public struct Resource
         }
     }
 
-    public static Resource operator +(Resource left, Resource right)
+    public static Resource operator +(
+        Resource left,
+        Resource right)
     {
         ValidateSameType(left, right);
-        return new Resource(left.Type, left.Amount + right.Amount);
-    }
-    public static Resource operator -(Resource left, Resource right)
-    {
-        ValidateSameType(left, right);
-        if (left < right)
-            throw new InvalidOperationException(
-                $"Cannot subtract {right.Amount} {right.Type} " +
-                $"from {left.Amount} {left.Type}.");
-        return new Resource(left.Type, left.Amount - right.Amount);
+
+        return new Resource(
+            left.Type,
+            left.Amount + right.Amount);
     }
 
-    public static bool operator <(Resource left, Resource right)
+    public static Resource operator -(
+        Resource left,
+        Resource right)
     {
         ValidateSameType(left, right);
+
+        if (left < right)
+        {
+            throw new BankruptException(
+                right.Amount,
+                left.Amount);
+        }
+
+        return new Resource(
+            left.Type,
+            left.Amount - right.Amount);
+    }
+
+    public static bool operator <(
+        Resource left,
+        Resource right)
+    {
+        ValidateSameType(left, right);
+
         return left.Amount < right.Amount;
     }
-    public static bool operator >(Resource left, Resource right)
+
+    public static bool operator >(
+        Resource left,
+        Resource right)
     {
         ValidateSameType(left, right);
+
         return left.Amount > right.Amount;
     }
-
 }

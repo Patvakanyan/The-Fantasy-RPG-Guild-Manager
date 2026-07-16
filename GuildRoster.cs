@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class GuildRoster<T> where T : IHero
 {
@@ -7,10 +9,13 @@ public class GuildRoster<T> where T : IHero
 
     public IReadOnlyList<T> Heroes => heroes;
 
+    public event Action? OnHeroesDepleted;
 
     public string GetHeroStatus(int heroId)
     {
-        if (!heroStatuses.TryGetValue(heroId, out string? status))
+        if (!heroStatuses.TryGetValue(
+            heroId,
+            out string? status))
         {
             throw new HeroUnavailableException(
                 $"Hero with ID {heroId} was not found.");
@@ -18,13 +23,20 @@ public class GuildRoster<T> where T : IHero
 
         return status;
     }
-    public event Action? OnHeroesDepleted;
+
     public void AddHero(T hero)
     {
         if (hero is null)
+        {
             throw new ArgumentNullException(nameof(hero));
+        }
+
         if (heroStatuses.ContainsKey(hero.Id))
-            throw new ArgumentException($"A hero with ID {hero.Id} already exists.");
+        {
+            throw new ArgumentException(
+                $"A hero with ID {hero.Id} already exists.");
+        }
+
         heroes.Add(hero);
         heroStatuses.Add(hero.Id, "Idle");
     }

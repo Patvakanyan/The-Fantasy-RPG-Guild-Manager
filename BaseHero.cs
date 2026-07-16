@@ -48,7 +48,10 @@ public abstract class ABaseHero : IHero
         }
     }
 
-    protected ABaseHero(int id, string name, decimal dailyCost)
+    protected ABaseHero(
+        int id,
+        string name,
+        Resource dailyCost)
     {
         _id = 0;
         _name = string.Empty;
@@ -56,6 +59,6 @@ public abstract class ABaseHero : IHero
 
         Id = id;
         Name = name;
-        DailyCost = new Resource("Gold", dailyCost);
+        DailyCost = dailyCost;
     }
 }

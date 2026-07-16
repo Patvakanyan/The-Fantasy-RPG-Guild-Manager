@@ -21,7 +21,11 @@ public class Mage : ABaseHero
         }
     }
 
-    public Mage(int id,string name,decimal dailyCost,int magicLevel)
+    public Mage(
+        int id,
+        string name,
+        Resource dailyCost,
+        int magicLevel)
         : base(id, name, dailyCost)
     {
         MagicLevel = magicLevel;

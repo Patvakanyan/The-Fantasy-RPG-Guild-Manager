@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 public class GuildReport<T> where T : IHero
 {
@@ -12,14 +13,17 @@ public class GuildReport<T> where T : IHero
     public IEnumerable<T> GetMostExpensiveHeroes(int count)
     {
         return roster.Heroes
-            .OrderByDescending(hero => hero.DailyCost.Amount)
+            .OrderByDescending(
+                hero => hero.DailyCost.Amount)
             .Take(count);
     }
+
     public IEnumerable<Warrior> GetAvailableWarriors()
     {
         return roster.Heroes
             .OfType<Warrior>()
-            .Where(warrior =>
-                roster.GetHeroStatus(warrior.Id) == "Idle");
+            .Where(
+                warrior =>
+                    roster.GetHeroStatus(warrior.Id) == "Idle");
     }
 }

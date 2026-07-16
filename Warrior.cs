@@ -19,7 +19,7 @@ public class Warrior : ABaseHero
             _strengthLevel = value;
         }
 	}
-    public Warrior(int id, string name, decimal dailyCost, int sLevel)
+    public Warrior(int id, string name, Resource dailyCost, int sLevel)
         : base(id, name, dailyCost)
     {
         StrengthLevel = sLevel;
