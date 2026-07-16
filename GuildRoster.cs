@@ -4,6 +4,20 @@ public class GuildRoster<T> where T : IHero
 {
     private readonly List<T> heroes = new();
     private readonly Dictionary<int, string> heroStatuses = new();
+
+    public IReadOnlyList<T> Heroes => heroes;
+
+
+    public string GetHeroStatus(int heroId)
+    {
+        if (!heroStatuses.TryGetValue(heroId, out string? status))
+        {
+            throw new HeroUnavailableException(
+                $"Hero with ID {heroId} was not found.");
+        }
+
+        return status;
+    }
     public event Action? OnHeroesDepleted;
     public void AddHero(T hero)
     {
