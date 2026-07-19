@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using System.Text;
 public static class Program
 {
     private static void Present()
@@ -124,11 +125,91 @@ public static class Program
                 $"Hero could not be recruited: {exception.Message}");
         }
     }
+    private static void Quest(GuildRoster<IHero> roster)
+    {
+        Console.Write("Input ID: ");
+        string? inputId = Console.ReadLine();
 
+        if (!int.TryParse(inputId, out int id))
+        {
+            Console.WriteLine("Please enter a valid hero ID.");
+            return;
+        }
+
+        try
+        {
+            roster.DispatchOnQuest(id);
+            Console.WriteLine(
+                $"Hero with ID {id} was dispatched successfully.");
+        }
+        catch (HeroUnavailableException exception)
+        {
+            Console.WriteLine(exception.Message);
+        }
+    }
+
+    private static void Report(GuildRoster<IHero> roster)
+    {
+        GuildReport<IHero> guildReport = new GuildReport<IHero>(roster);
+        StringBuilder reportBuilder = new StringBuilder();
+
+        reportBuilder.AppendLine("Top 3 Most Expensive Heroes");
+
+        IEnumerable<IHero> expensiveHeroes =
+            guildReport.GetMostExpensiveHeroes(3);
+
+        int heroNumber = 1;
+        foreach(IHero hero in expensiveHeroes)
+        {
+            reportBuilder.AppendLine(
+                $"{heroNumber}. {hero.Name} — " +
+                $"{hero.GetType().Name} — " +
+                $"{hero.DailyCost}");
+
+            heroNumber++;
+        }
+        if (heroNumber == 1)
+        {
+            reportBuilder.AppendLine("No heroes found.");
+        }
+
+        reportBuilder.AppendLine();
+        reportBuilder.AppendLine("Available Warriors");
+
+        IEnumerable<Warrior> availableWarriors =
+            guildReport.GetAvailableWarriors();
+
+        int warriorNumber = 1;
+
+        foreach (Warrior warrior in availableWarriors)
+        {
+            reportBuilder.AppendLine(
+                $"{warriorNumber}. {warrior.Name} — " +
+                $"Strength: {warrior.StrengthLevel}");
+
+            warriorNumber++;
+        }
+
+        if (warriorNumber == 1)
+        {
+            reportBuilder.AppendLine("No available warriors.");
+        }
+        Console.WriteLine(reportBuilder.ToString());
+
+    }
     public static void Main()
     {
         GuildRoster<IHero> roster = new();
+        roster.OnHeroesDepleted += () =>
+        {
+            ConsoleColor previousColor = Console.ForegroundColor;
 
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(
+                "WARNING: No heroes left to defend the guild!");
+
+            Console.ForegroundColor = previousColor;
+        };
         while (true)
         {
             Present();
@@ -154,13 +235,11 @@ public static class Program
             }
             else if (command == "QUEST")
             {
-                Console.WriteLine(
-                    "QUEST is not implemented yet.");
+                Quest(roster);
             }
             else if (command == "REPORT")
             {
-                Console.WriteLine(
-                    "REPORT is not implemented yet.");
+                Report(roster);
             }
             else
             {
